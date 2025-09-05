@@ -6,13 +6,38 @@ import Dashboard from './views/Dashboard/Dashboard'
 import type { ReactElement } from 'react'
 
 function PrivateRoute({ children }: { children: ReactElement }) {
-  const { user } = useAuth()
+  const { user, loading } = useAuth()
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <p className="text-gray-600">Carregando...</p>
+        </div>
+      </div>
+    )
+  }
+  
   if (!user) return <Navigate to="/login" replace />
   return children
 }
 
 function AppRoutes() {
-  const { user } = useAuth()
+  const { user, loading } = useAuth()
+  
+  // Aguarda o carregamento inicial para decidir as rotas
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <p className="text-gray-600">Carregando...</p>
+        </div>
+      </div>
+    )
+  }
+  
   return (
     <Routes>
       <Route path="/login" element={<Login />} />

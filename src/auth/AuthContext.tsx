@@ -29,17 +29,24 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true) // Inicia como true para verificar sessionStorage
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    // Recupera usuário do localStorage se existir
-    const saved = localStorage.getItem('user')
+    // Recupera usuário do sessionStorage se existir
+    const saved = sessionStorage.getItem('user')
     if (saved) {
-      const userData: User = JSON.parse(saved)
-      setUser(userData)
-      api.defaults.headers.common['Authorization'] = `${userData.token_type} ${userData.access_token}`
+      try {
+        const userData: User = JSON.parse(saved)
+        setUser(userData)
+        // Configura axios para enviar o token em todas as requisições
+        api.defaults.headers.common['Authorization'] = `${userData.token_type} ${userData.access_token}`
+      } catch (error) {
+        console.error('Erro ao recuperar dados do usuário:', error)
+        sessionStorage.removeItem('user')
+      }
     }
+    setLoading(false)
   }, [])
 
   async function login(email: string, password: string) {
@@ -57,7 +64,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         agent_id: data.user.agent_id,
       }
       setUser(userData)
-      localStorage.setItem('user', JSON.stringify(userData))
+      // Salva no sessionStorage para persistir durante a sessão
+      sessionStorage.setItem('user', JSON.stringify(userData))
       // Configura axios para enviar o token em todas as requisições
       api.defaults.headers.common['Authorization'] = `${data.token_type} ${data.access_token}`
     } catch (err: any) {
@@ -69,7 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   function logout() {
     setUser(null)
-    localStorage.removeItem('user')
+    sessionStorage.removeItem('user')
     delete api.defaults.headers.common['Authorization']
   }
 
