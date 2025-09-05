@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+/* Fundo aurora animado */
+.dashboard-bg {
+  @apply absolute inset-0 -z-10 overflow-hidden;
+}
+.dashboard-bg-gradient {
+  @apply absolute inset-0 bg-gradient-to-br from-blue-900 via-violet-900 to-slate-900 opacity-80;
+}
+.dashboard-bg-aurora {
+  @apply absolute rounded-full blur-3xl;
+}
+.dashboard-bg-aurora-blue {
+  @apply left-0 top-0 h-[60vw] w-[60vw] bg-blue-600/20 animate-pulse;
+}
+.dashboard-bg-aurora-violet {
+  @apply right-0 top-0 h-[40vw] w-[40vw] bg-violet-600/20 animate-pulse;
+}
+.dashboard-bg-aurora-emerald {
+  @apply right-0 bottom-0 h-[30vw] w-[30vw] bg-emerald-400/10 animate-pulse;
+}
+
+@keyframes pulse {
+  0% { opacity: .7; }
+  100% { opacity: 1; }
+}
+.animate-pulse {
+  animation: pulse 6s cubic-bezier(.4,0,.2,1) infinite alternate;
+}
+
+/* Fade in para cards */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.7s cubic-bezier(.4,0,.2,1) both;
+}

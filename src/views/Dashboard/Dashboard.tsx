@@ -1,10 +1,7 @@
-import AdminPlataformaDashboard from './AdminPlataforma/AdminPlataformaDashboard'
-import TecnicoSuporteDashboard from './TecnicoSuporte/TecnicoSuporteDashboard'
-import AdminClienteDashboard from './AdminCliente/AdminClienteDashboard'
-import SuperAdminDashboard from './SuperAdmin/SuperAdminDashboard'
-import SupportAgentDashboard from './SupportAgent/SupportAgentDashboard'
 import ClientAdminDashboard from './ClientAdmin/ClientAdminDashboard'
 import ClientUserDashboard from './ClientUser/ClientUserDashboard'
+import SuperAdminDashboard from './SuperAdmin/SuperAdminDashboard'
+import SupportAgentDashboard from './SupportAgent/SupportAgentDashboard'
 
 export type Role = 'super_admin' | 'support_agent' | 'client_admin' | 'client_user'
 
