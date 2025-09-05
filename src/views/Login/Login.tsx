@@ -93,9 +93,6 @@ export default function Login() {
                   <Button type="submit" disabled={loading} loading={loading} className="w-full">
                     Entrar
                   </Button>
-                  <Button type="button" variant="secondary" className="w-full">
-                    Entrar com SSO
-                  </Button>
                 </div>
 
                 <p className="text-center text-sm text-slate-600">
