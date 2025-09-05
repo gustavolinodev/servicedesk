@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+/* Fundo com efeito aurora sutil */
+.login-bg {
+  position: relative;
+  background: radial-gradient(900px 500px at -10% -20%, rgba(59,130,246,0.22), transparent 50%),
+              radial-gradient(900px 500px at 110% -10%, rgba(168,85,247,0.16), transparent 50%),
+              linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+  overflow: hidden;
+}
+.login-bg::before,
+.login-bg::after {
+  content: "";
+  position: absolute;
+  width: 60vmax;
+  height: 60vmax;
+  top: -10vmax;
+  left: -10vmax;
+  background: radial-gradient(closest-side, rgba(59,130,246,0.18), transparent 70%);
+  filter: blur(40px);
+  animation: float1 14s ease-in-out infinite alternate;
+}
+.login-bg::after {
+  top: auto;
+  bottom: -15vmax;
+  left: auto;
+  right: -10vmax;
+  background: radial-gradient(closest-side, rgba(168,85,247,0.16), transparent 70%);
+  animation: float2 16s ease-in-out infinite alternate;
+}
+@keyframes float1 { from { transform: translateY(0) } to { transform: translateY(20px) } }
+@keyframes float2 { from { transform: translateY(0) } to { transform: translateY(-25px) } }
+
+.glass { background: rgba(255,255,255,0.85); backdrop-filter: blur(14px); }
+
+.brand-gradient { background: linear-gradient(90deg, #2563eb, #7c3aed); }
+
+/* Borda com gradiente discreto */
+.gradient-border {
+  position: relative;
+}
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(120deg, rgba(59,130,246,0.4), rgba(124,58,237,0.4));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+}
