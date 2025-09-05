@@ -9,6 +9,7 @@ interface Props {
   showNotifications?: boolean
   notificationCount?: number
   sidebarCollapsed?: boolean
+  activeMenuItem?: string
   onMenuClick?: (menuItem: string) => void
   onNotificationClick?: () => void
   onProfileClick?: () => void
@@ -24,6 +25,7 @@ export default function DashboardLayout({
   showNotifications = true,
   notificationCount = 3,
   sidebarCollapsed = false,
+  activeMenuItem = 'dashboard',
   onMenuClick,
   onNotificationClick,
   onProfileClick,
@@ -40,17 +42,16 @@ export default function DashboardLayout({
     }
   }
 
-  return (
+    return (
     <div className={styles['dashboard-root']}>
       <Sidebar 
         onMenuClick={handleMenuClick}
         collapsed={sidebarCollapsed}
         onToggleCollapse={onSidebarToggle}
+        activeMenuItem={activeMenuItem}
       >
         {sidebarContent}
-      </Sidebar>
-
-      {/* Main content */}
+      </Sidebar>      {/* Main content */}
       <div className={styles['main-content']}>
         <TopMenu 
           showNotifications={showNotifications}

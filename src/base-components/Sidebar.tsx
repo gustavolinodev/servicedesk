@@ -14,6 +14,7 @@ import {
   faUserCog,
   faDatabase,
   faShieldAlt,
+  faBuilding,
   faChevronLeft,
   faChevronRight
 } from '@fortawesome/free-solid-svg-icons'
@@ -24,6 +25,7 @@ interface SidebarProps {
   onMenuClick?: (menuItem: string) => void
   collapsed?: boolean
   onToggleCollapse?: (collapsed: boolean) => void
+  activeMenuItem?: string
 }
 
 interface MenuItemProps {
@@ -77,49 +79,59 @@ function MenuItem({ icon, label, href = "#", active = false, onClick, collapsed 
 }
 
 // Menus específicos por role
-const getMenuByRole = (role: string): MenuConfig[] => {
+const getMenuByRole = (role: string, activeMenuItem: string = 'dashboard'): MenuConfig[] => {
   const commonItems: MenuConfig[] = [
-    { icon: faHome, label: "Dashboard", key: "dashboard", active: true },
+    { icon: faHome, label: "Dashboard", key: "dashboard", active: activeMenuItem === 'dashboard' },
   ]
 
   const roleMenus: Record<string, MenuConfig[]> = {
+    'super_admin': [
+      ...commonItems,
+      { icon: faBuilding, label: "Empresas", key: "companies", active: activeMenuItem === 'companies' },
+      { icon: faUsers, label: "Usuários", key: "users", active: activeMenuItem === 'users' },
+      { icon: faTicketAlt, label: "Tickets", key: "tickets", badge: 12, active: activeMenuItem === 'tickets' },
+      { icon: faChartBar, label: "Relatórios", key: "reports", active: activeMenuItem === 'reports' },
+      { icon: faDatabase, label: "Sistema", key: "system", active: activeMenuItem === 'system' },
+      { icon: faShieldAlt, label: "Segurança", key: "security", active: activeMenuItem === 'security' },
+      { icon: faCog, label: "Configurações", key: "settings", active: activeMenuItem === 'settings' },
+    ],
     'admin': [
       ...commonItems,
-      { icon: faUsers, label: "Usuários", key: "users" },
-      { icon: faTicketAlt, label: "Tickets", key: "tickets", badge: 12 },
-      { icon: faChartBar, label: "Relatórios", key: "reports" },
-      { icon: faDatabase, label: "Sistema", key: "system" },
-      { icon: faShieldAlt, label: "Segurança", key: "security" },
-      { icon: faCog, label: "Configurações", key: "settings" },
+      { icon: faUsers, label: "Usuários", key: "users", active: activeMenuItem === 'users' },
+      { icon: faTicketAlt, label: "Tickets", key: "tickets", badge: 12, active: activeMenuItem === 'tickets' },
+      { icon: faChartBar, label: "Relatórios", key: "reports", active: activeMenuItem === 'reports' },
+      { icon: faDatabase, label: "Sistema", key: "system", active: activeMenuItem === 'system' },
+      { icon: faShieldAlt, label: "Segurança", key: "security", active: activeMenuItem === 'security' },
+      { icon: faCog, label: "Configurações", key: "settings", active: activeMenuItem === 'settings' },
     ],
     'support_agent': [
       ...commonItems,
-      { icon: faTicketAlt, label: "Meus Tickets", key: "tickets", badge: 8 },
-      { icon: faClipboardList, label: "Fila de Tickets", key: "ticket-queue", badge: 23 },
-      { icon: faHeadset, label: "Atendimento", key: "support" },
-      { icon: faFileAlt, label: "Base Conhecimento", key: "knowledge" },
-      { icon: faChartBar, label: "Relatórios", key: "reports" },
+      { icon: faTicketAlt, label: "Meus Tickets", key: "tickets", badge: 8, active: activeMenuItem === 'tickets' },
+      { icon: faClipboardList, label: "Fila de Tickets", key: "ticket-queue", badge: 23, active: activeMenuItem === 'ticket-queue' },
+      { icon: faHeadset, label: "Atendimento", key: "support", active: activeMenuItem === 'support' },
+      { icon: faFileAlt, label: "Base Conhecimento", key: "knowledge", active: activeMenuItem === 'knowledge' },
+      { icon: faChartBar, label: "Relatórios", key: "reports", active: activeMenuItem === 'reports' },
     ],
     'support_manager': [
       ...commonItems,
-      { icon: faTicketAlt, label: "Todos Tickets", key: "tickets", badge: 45 },
-      { icon: faUsers, label: "Equipe", key: "team" },
-      { icon: faChartBar, label: "Relatórios", key: "reports" },
-      { icon: faTools, label: "Ferramentas", key: "tools" },
-      { icon: faUserCog, label: "Configurações", key: "settings" },
+      { icon: faTicketAlt, label: "Todos Tickets", key: "tickets", badge: 45, active: activeMenuItem === 'tickets' },
+      { icon: faUsers, label: "Equipe", key: "team", active: activeMenuItem === 'team' },
+      { icon: faChartBar, label: "Relatórios", key: "reports", active: activeMenuItem === 'reports' },
+      { icon: faTools, label: "Ferramentas", key: "tools", active: activeMenuItem === 'tools' },
+      { icon: faUserCog, label: "Configurações", key: "settings", active: activeMenuItem === 'settings' },
     ],
     'client_user': [
       ...commonItems,
-      { icon: faTicketAlt, label: "Meus Tickets", key: "tickets", badge: 3 },
-      { icon: faFileAlt, label: "Abrir Ticket", key: "new-ticket" },
-      { icon: faHeadset, label: "Suporte", key: "support" },
+      { icon: faTicketAlt, label: "Meus Tickets", key: "tickets", badge: 3, active: activeMenuItem === 'tickets' },
+      { icon: faFileAlt, label: "Abrir Ticket", key: "new-ticket", active: activeMenuItem === 'new-ticket' },
+      { icon: faHeadset, label: "Suporte", key: "support", active: activeMenuItem === 'support' },
     ],
   }
 
   return roleMenus[role] || roleMenus['client_user']
 }
 
-export default function Sidebar({ children, onMenuClick, collapsed = false, onToggleCollapse }: SidebarProps) {
+export default function Sidebar({ children, onMenuClick, collapsed = false, onToggleCollapse, activeMenuItem = 'dashboard' }: SidebarProps) {
   const { user } = useAuth()
   const [internalCollapsed, setInternalCollapsed] = useState(collapsed)
 
@@ -140,7 +152,7 @@ export default function Sidebar({ children, onMenuClick, collapsed = false, onTo
     }
   }
 
-  const menuItems = getMenuByRole(user?.role || 'client_user')
+  const menuItems = getMenuByRole(user?.role || 'client_user', activeMenuItem)
 
   return (
     <aside className={`${styles.sidebar} ${isCollapsed ? styles['sidebar-collapsed'] : ''}`}>
