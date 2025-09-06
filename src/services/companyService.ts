@@ -1,25 +1,49 @@
 import api from './api'
 
+export interface User {
+  id: number
+  name: string
+  email: string
+  role: string
+  email_verified_at: string | null
+  created_at: string
+  updated_at: string
+  company_id: number
+  assigned_agent_id: number | null
+  is_active: boolean
+  google_id: string | null
+}
+
+export interface Project {
+  id: number
+  company_id: number
+  name: string
+  description: string
+  hourly_rate: string
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface Ticket {
+  id: number
+  // Adicionar propriedades conforme necessário quando disponível
+}
+
 export interface Company {
   id: number
   name: string
   email: string
-  phone?: string
-  address?: string
+  phone: string
+  address: string
   cnpj: string
   is_active: boolean
   created_at: string
   updated_at: string
-  admin?: {
-    id: number
-    name: string
-    email: string
-  }
-  clientUsers?: {
-    id: number
-    name: string
-    email: string
-  }[]
+  admin?: User
+  client_users?: User[]
+  projects?: Project[]
+  tickets?: Ticket[]
   projects_count?: number
   tickets_count?: number
 }

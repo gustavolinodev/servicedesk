@@ -5,9 +5,12 @@ import {
   faSave, 
   faSpinner,
   faBuilding,
-  faExclamationTriangle
+  faExclamationTriangle,
+  faCheckCircle,
+  faTimesCircle
 } from '@fortawesome/free-solid-svg-icons'
 import { useAuth } from '../../auth/AuthContext'
+import MaskedInput from '../common/MaskedInput'
 import { 
   createCompany, 
   updateCompany, 
@@ -15,6 +18,12 @@ import {
   type CreateCompanyData, 
   type UpdateCompanyData 
 } from '../../services/companyService'
+import { 
+  applyCpfCnpjMask,
+  applyPhoneMask,
+  isValidCpfCnpj, 
+  getDocumentType 
+} from '../../utils/masks'
 
 interface CompanyFormProps {
   company?: Company | null
@@ -79,10 +88,12 @@ export default function CompanyForm({ company, onClose, onSuccess }: CompanyForm
     }
     
     if (!formData.cnpj.trim()) {
-      newErrors.cnpj = 'CNPJ é obrigatório'
-    } else if (!/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/.test(formData.cnpj)) {
-      // Formato básico de CNPJ: 00.000.000/0000-00
-      newErrors.cnpj = 'CNPJ deve estar no formato 00.000.000/0000-00'
+      newErrors.cnpj = 'CPF/CNPJ é obrigatório'
+    } else if (!isValidCpfCnpj(formData.cnpj)) {
+      const documentType = getDocumentType(formData.cnpj)
+      if (documentType === 'Inválido') {
+        newErrors.cnpj = 'CPF ou CNPJ inválido'
+      }
     }
     
     setErrors(newErrors)
@@ -200,24 +211,50 @@ export default function CompanyForm({ company, onClose, onSuccess }: CompanyForm
             )}
           </div>
 
-          {/* CNPJ */}
+          {/* CPF/CNPJ */}
           <div>
             <label htmlFor="cnpj" className="block text-sm font-medium text-slate-700 mb-2">
-              CNPJ *
+              CPF/CNPJ *
             </label>
-            <input
-              type="text"
-              id="cnpj"
-              name="cnpj"
-              value={formData.cnpj}
-              onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                errors.cnpj ? 'border-red-300' : 'border-slate-300'
-              }`}
-              placeholder="00.000.000/0000-00"
-            />
+            <div className="relative">
+              <MaskedInput
+                mask={applyCpfCnpjMask}
+                value={formData.cnpj}
+                onChange={handleChange}
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  errors.cnpj ? 'border-red-300' : 'border-slate-300'
+                }`}
+                placeholder="000.000.000-00 ou 00.000.000/0000-00"
+                id="cnpj"
+                name="cnpj"
+              />
+              {formData.cnpj && !errors.cnpj && isValidCpfCnpj(formData.cnpj) && (
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                  <FontAwesomeIcon 
+                    icon={faCheckCircle} 
+                    className="text-green-500"
+                  />
+                  <span className="ml-1 text-xs text-green-600">
+                    {getDocumentType(formData.cnpj)}
+                  </span>
+                </div>
+              )}
+              {formData.cnpj && errors.cnpj && (
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                  <FontAwesomeIcon 
+                    icon={faTimesCircle} 
+                    className="text-red-500"
+                  />
+                </div>
+              )}
+            </div>
             {errors.cnpj && (
               <p className="mt-1 text-sm text-red-600">{errors.cnpj}</p>
+            )}
+            {formData.cnpj && !errors.cnpj && isValidCpfCnpj(formData.cnpj) && (
+              <p className="mt-1 text-sm text-green-600">
+                ✓ {getDocumentType(formData.cnpj)} válido
+              </p>
             )}
           </div>
 
@@ -226,14 +263,14 @@ export default function CompanyForm({ company, onClose, onSuccess }: CompanyForm
             <label htmlFor="phone" className="block text-sm font-medium text-slate-700 mb-2">
               Telefone
             </label>
-            <input
-              type="text"
-              id="phone"
-              name="phone"
+            <MaskedInput
+              mask={applyPhoneMask}
               value={formData.phone}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="(00) 0000-0000"
+              placeholder="(00) 0000-0000 ou (00) 90000-0000"
+              id="phone"
+              name="phone"
             />
           </div>
 

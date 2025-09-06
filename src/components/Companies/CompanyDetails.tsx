@@ -177,19 +177,35 @@ export default function CompanyDetails({ companyId, onClose, onEdit }: CompanyDe
                       <FontAwesomeIcon icon={faProjectDiagram} className="text-green-600 mr-2" />
                       Estatísticas
                     </h3>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
-                        <FontAwesomeIcon icon={faProjectDiagram} className="text-blue-600 text-2xl mb-2" />
+                        <FontAwesomeIcon icon={faUser} className="text-blue-600 text-2xl mb-2" />
                         <p className="text-2xl font-bold text-blue-900">
-                          {company.projects_count || 0}
+                          {company.admin ? 1 : 0}
                         </p>
-                        <p className="text-sm text-blue-700">Projetos</p>
+                        <p className="text-sm text-blue-700">Admin</p>
+                      </div>
+
+                      <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 text-center">
+                        <FontAwesomeIcon icon={faUsers} className="text-purple-600 text-2xl mb-2" />
+                        <p className="text-2xl font-bold text-purple-900">
+                          {company.client_users?.length || 0}
+                        </p>
+                        <p className="text-sm text-purple-700">Usuários</p>
+                      </div>
+                      
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+                        <FontAwesomeIcon icon={faProjectDiagram} className="text-green-600 text-2xl mb-2" />
+                        <p className="text-2xl font-bold text-green-900">
+                          {company.projects?.length || 0}
+                        </p>
+                        <p className="text-sm text-green-700">Projetos</p>
                       </div>
                       
                       <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 text-center">
                         <FontAwesomeIcon icon={faTicketAlt} className="text-orange-600 text-2xl mb-2" />
                         <p className="text-2xl font-bold text-orange-900">
-                          {company.tickets_count || 0}
+                          {company.tickets?.length || 0}
                         </p>
                         <p className="text-sm text-orange-700">Tickets</p>
                       </div>
@@ -219,31 +235,6 @@ export default function CompanyDetails({ companyId, onClose, onEdit }: CompanyDe
                 </div>
               )}
 
-              {/* Usuários da empresa */}
-              {company.clientUsers && company.clientUsers.length > 0 && (
-                <div>
-                  <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
-                    <FontAwesomeIcon icon={faUsers} className="text-green-600 mr-2" />
-                    Usuários da Empresa ({company.clientUsers.length})
-                  </h3>
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                    <div className="space-y-3">
-                      {company.clientUsers.map((clientUser) => (
-                        <div key={clientUser.id} className="flex items-center space-x-3">
-                          <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                            <FontAwesomeIcon icon={faUser} className="text-green-600 text-sm" />
-                          </div>
-                          <div>
-                            <p className="font-medium text-slate-900">{clientUser.name}</p>
-                            <p className="text-sm text-slate-600">{clientUser.email}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-
               {/* Informações de sistema */}
               <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
                 <h4 className="font-medium text-slate-700 mb-2">Informações do Sistema</h4>
@@ -252,6 +243,118 @@ export default function CompanyDetails({ companyId, onClose, onEdit }: CompanyDe
                   <p><strong>Última atualização:</strong> {new Date(company.updated_at).toLocaleDateString('pt-BR')} às {new Date(company.updated_at).toLocaleTimeString('pt-BR')}</p>
                 </div>
               </div>
+
+              {/* Usuários Cliente */}
+              {company.client_users && company.client_users.length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
+                    <FontAwesomeIcon icon={faUsers} className="text-purple-600 mr-2" />
+                    Usuários Cliente ({company.client_users.length})
+                  </h3>
+                  <div className="bg-slate-50 rounded-lg p-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {company.client_users.map((user) => (
+                        <div key={user.id} className="bg-white rounded-lg p-4 border">
+                          <div className="flex items-start justify-between">
+                            <div>
+                              <h4 className="font-semibold text-slate-900">{user.name}</h4>
+                              <p className="text-slate-600 text-sm">{user.email}</p>
+                              <div className="mt-2 flex items-center space-x-2">
+                                <span className="inline-block bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">
+                                  {user.role}
+                                </span>
+                                <span className={`inline-block text-xs px-2 py-1 rounded-full ${
+                                  user.is_active 
+                                    ? 'bg-green-100 text-green-800' 
+                                    : 'bg-red-100 text-red-800'
+                                }`}>
+                                  {user.is_active ? 'Ativo' : 'Inativo'}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Projetos */}
+              {company.projects && company.projects.length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
+                    <FontAwesomeIcon icon={faProjectDiagram} className="text-green-600 mr-2" />
+                    Projetos ({company.projects.length})
+                  </h3>
+                  <div className="bg-slate-50 rounded-lg p-4">
+                    <div className="space-y-4">
+                      {company.projects.map((project) => (
+                        <div key={project.id} className="bg-white rounded-lg p-4 border">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <h4 className="font-semibold text-slate-900">{project.name}</h4>
+                              <p className="text-slate-600 text-sm mt-1">{project.description}</p>
+                              <div className="mt-3 flex items-center space-x-4">
+                                <div>
+                                  <span className="text-sm font-medium text-slate-700">Valor/hora: </span>
+                                  <span className="text-green-600 font-semibold">R$ {project.hourly_rate}</span>
+                                </div>
+                                <span className={`inline-block text-xs px-2 py-1 rounded-full ${
+                                  project.is_active 
+                                    ? 'bg-green-100 text-green-800' 
+                                    : 'bg-red-100 text-red-800'
+                                }`}>
+                                  {project.is_active ? 'Ativo' : 'Inativo'}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Administrador */}
+              {company.admin && (
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
+                    <FontAwesomeIcon icon={faUser} className="text-blue-600 mr-2" />
+                    Administrador
+                  </h3>
+                  <div className="bg-slate-50 rounded-lg p-4">
+                    <div className="bg-white rounded-lg p-4 border">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h4 className="font-semibold text-slate-900">{company.admin.name}</h4>
+                          <p className="text-slate-600 text-sm">{company.admin.email}</p>
+                          <div className="mt-2 flex items-center space-x-2">
+                            <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                              {company.admin.role}
+                            </span>
+                            <span className={`inline-block text-xs px-2 py-1 rounded-full ${
+                              company.admin.is_active 
+                                ? 'bg-green-100 text-green-800' 
+                                : 'bg-red-100 text-red-800'
+                            }`}>
+                              {company.admin.is_active ? 'Ativo' : 'Inativo'}
+                            </span>
+                          </div>
+                          {company.admin.assigned_agent_id && (
+                            <div className="mt-2">
+                              <span className="text-sm text-slate-600">
+                                Agente Responsável ID: {company.admin.assigned_agent_id}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           ) : null}
         </div>

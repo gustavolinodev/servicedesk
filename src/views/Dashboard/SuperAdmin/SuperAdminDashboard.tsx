@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import DashboardLayout from '../../../base-components/DashboardLayout'
 import CompaniesPage from '../../Companies/CompaniesPage'
+import type { Company } from '../../../services/companyService'
 import CompanyFormPage from '../../Companies/CompanyFormPage'
 import CompanyDetailsPage from '../../Companies/CompanyDetailsPage'
-import type { Company } from '../../../services/companyService'
 
 export default function SuperAdminDashboard() {
   const [currentView, setCurrentView] = useState('dashboard')
