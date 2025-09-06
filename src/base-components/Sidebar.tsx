@@ -15,6 +15,7 @@ import {
   faDatabase,
   faShieldAlt,
   faBuilding,
+  faProjectDiagram,
   faChevronLeft,
   faChevronRight
 } from '@fortawesome/free-solid-svg-icons'
@@ -88,6 +89,7 @@ const getMenuByRole = (role: string, activeMenuItem: string = 'dashboard'): Menu
     'super_admin': [
       ...commonItems,
       { icon: faBuilding, label: "Empresas", key: "companies", active: activeMenuItem === 'companies' },
+      { icon: faProjectDiagram, label: "Projetos", key: "projects", active: activeMenuItem === 'projects' },
       { icon: faUsers, label: "Usuários", key: "users", active: activeMenuItem === 'users' },
       { icon: faTicketAlt, label: "Tickets", key: "tickets", badge: 12, active: activeMenuItem === 'tickets' },
       { icon: faChartBar, label: "Relatórios", key: "reports", active: activeMenuItem === 'reports' },

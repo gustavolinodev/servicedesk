@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import DashboardLayout from '../../../base-components/DashboardLayout'
 import CompaniesPage from '../../Companies/CompaniesPage'
+import ProjectsPage from '../../Projects/ProjectsPage'
 import type { Company } from '../../../services/companyService'
 import CompanyFormPage from '../../Companies/CompanyFormPage'
 import CompanyDetailsPage from '../../Companies/CompanyDetailsPage'
@@ -55,6 +56,8 @@ export default function SuperAdminDashboard() {
             onEditClick={handleCompanyEdit}
           />
         )
+      case 'projects':
+        return <ProjectsPage />
       case 'company-form':
         return (
           <CompanyFormPage 
